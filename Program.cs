@@ -10,7 +10,7 @@ namespace DotnetGlobalToolGitClearBranches
 {
     internal static class Program
     {
-        private static Task<int> Main(string[] args)
+        private static Task<int> Main(string[] whitelisted)
         {
             var repositoryPath = ResolveRepositoryPath();
             if (IsNullOrEmpty(repositoryPath))
@@ -29,14 +29,13 @@ namespace DotnetGlobalToolGitClearBranches
             /**
              * git branch --merged | %{$_.trim()}  | ?{$_ -notmatch 'dev' -and $_ -notmatch 'master'} | %{git branch -d $_}
              */
+            
+            WriteLine(repositoryPath);
+            var repository = new Repository(repositoryPath);
 
-
-            var path = repositoryPath.Substring(0, repositoryPath.LastIndexOf("/.git/", StringComparison.Ordinal));
-            WriteLine(path);
-            var repository = new Repository(path);
-
-            var notTrackingBranches = repository.Branches.ToList();
-            WriteLine($"Number of non-tracking branches {notTrackingBranches.Count()}");
+            var notTrackingBranches = repository.Branches.Where(
+                b=>!b.IsTracking && !whitelisted.Contains(b.FriendlyName) ).ToList();
+            
             foreach (var branch in notTrackingBranches)
             {
                 WriteLine(branch.FriendlyName);
@@ -54,7 +53,7 @@ namespace DotnetGlobalToolGitClearBranches
                 return Empty;
 
             return Repository.IsValid(repositoryPath) 
-                ? repositoryPath 
+                ? repositoryPath[..repositoryPath.LastIndexOf("/.git/", StringComparison.Ordinal)]
                 : Empty;
         }
 
