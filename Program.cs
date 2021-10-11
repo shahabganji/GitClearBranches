@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using LibGit2Sharp;
 using static System.Console;
@@ -10,13 +11,16 @@ namespace GitClearBranches
 {
     internal static class Program
     {
+        private static ConsoleColor _defaultConsoleColor;
         private static Task<int> Main(string[] whitelisted)
         {
+            _defaultConsoleColor = ForegroundColor;
+
             if (whitelisted.Length == 0)
             {
                 whitelisted = new[] { "master", "main", "dev", "develop", "prod" };
             }
-            
+
             var repositoryPath = ResolveRepositoryPath();
             if (IsNullOrEmpty(repositoryPath))
             {
@@ -32,24 +36,47 @@ namespace GitClearBranches
             }
 
             using var repository = new Repository(repositoryPath);
-            
+
             var headRef = repository.Refs.Where(r => r.CanonicalName == repository.Head.CanonicalName);
 
             var notTrackedMergedLocalBranches = repository.Branches.Where(
-                b=>
-                    !b.IsTracking && 
+                b =>
+                    // !b.IsTracking && 
                     !b.IsRemote &&
+                    (!b.IsTracking || b.TrackingDetails.CommonAncestor is null) &&
                     b.FriendlyName != repository.Head.FriendlyName &&
                     repository.Refs.ReachableFrom(headRef, new[] { b.Tip }).Any() && // merged
-                    !whitelisted.Contains(b.FriendlyName) 
+                    !whitelisted.Contains(b.FriendlyName)
             ).ToList();
-            
-            foreach (var branch in notTrackedMergedLocalBranches)
+
+            if (!notTrackedMergedLocalBranches.Any())
+                return Task.FromResult(0);
+
+            if (whitelisted.Contains("--yes") || whitelisted.Contains("-y"))
             {
-                repository.Branches.Remove(branch);
-                WriteLine(branch.FriendlyName);
+                notTrackedMergedLocalBranches.ForEach(repository.Branches.Remove);
+                return Task.FromResult(0);
             }
-            
+
+            WriteLine("Branches to be removed: ");
+            WriteLine();
+            var indexer = 0;
+            notTrackedMergedLocalBranches.ForEach((b) =>
+            {
+                Write(b.FriendlyName);
+                Write("\t");
+                if(indexer++ % 5 == 0) WriteLine();
+            });
+            WriteLine("--------------------------------------------");
+            WriteLine();
+            ForegroundColor = ConsoleColor.Cyan;
+            Write("Are you sure you wanna delete those branches (Y/n) ?  ");
+            var answer = ReadLine();
+            ForegroundColor = _defaultConsoleColor;
+
+            if (answer == "Y")
+                notTrackedMergedLocalBranches.ForEach(repository.Branches.Remove);
+
             return Task.FromResult(0);
         }
 
@@ -61,7 +88,7 @@ namespace GitClearBranches
             if (IsNullOrEmpty(repositoryPath))
                 return Empty;
 
-            return Repository.IsValid(repositoryPath) 
+            return Repository.IsValid(repositoryPath)
                 ? repositoryPath[..repositoryPath.LastIndexOf("/.git/", StringComparison.Ordinal)]
                 : Empty;
         }
@@ -73,7 +100,7 @@ namespace GitClearBranches
                 return Empty;
 
             var paths = path.Split(Path.PathSeparator);
-            
+
             var fileNames = new[] { "git.exe", "git" };
             var searchPaths = paths.SelectMany(p => fileNames.Select(f => Path.Combine(p, f)));
 
