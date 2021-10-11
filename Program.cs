@@ -74,7 +74,7 @@ namespace GitClearBranches
             var answer = ReadLine();
             ForegroundColor = _defaultConsoleColor;
 
-            if (answer == "Y")
+            if (IsNullOrEmpty(answer) || answer == "Y")
                 notTrackedMergedLocalBranches.ForEach(repository.Branches.Remove);
 
             return Task.FromResult(0);
