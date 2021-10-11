@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>git-rm-branches</ToolCommandName>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
+
+
+<!--    <PropertyGroup>-->
+<!--      <PackageOutputPath>$(OutDir)</PackageOutputPath>-->
+<!--      <GeneratePackageOnBuild>True</GeneratePackageOnBuild>-->
+<!--      <RepositoryUrl>https://github.com/terrajobst/git-istage</RepositoryUrl>-->
+<!--    </PropertyGroup>-->
+    
+      <Description>Clear local branches with no upstream branch</Description>
+      <Company>Saeed Ganji</Company>
+      <Copyright>Copyright © Saeed Ganji (Shahab)</Copyright>
+        
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
+  </ItemGroup>
+
+</Project>
