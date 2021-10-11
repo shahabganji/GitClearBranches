@@ -6,12 +6,17 @@ using LibGit2Sharp;
 using static System.Console;
 using static System.String;
 
-namespace DotnetGlobalToolGitClearBranches
+namespace GitClearBranches
 {
     internal static class Program
     {
         private static Task<int> Main(string[] whitelisted)
         {
+            if (whitelisted.Length == 0)
+            {
+                whitelisted = new[] { "master", "main", "dev", "develop", "prod" };
+            }
+            
             var repositoryPath = ResolveRepositoryPath();
             if (IsNullOrEmpty(repositoryPath))
             {
@@ -25,19 +30,23 @@ namespace DotnetGlobalToolGitClearBranches
                 WriteLine("fatal: git is not in your path");
                 return Task.FromResult(-2);
             }
-            
-            /**
-             * git branch --merged | %{$_.trim()}  | ?{$_ -notmatch 'dev' -and $_ -notmatch 'master'} | %{git branch -d $_}
-             */
-            
-            WriteLine(repositoryPath);
-            var repository = new Repository(repositoryPath);
 
-            var notTrackingBranches = repository.Branches.Where(
-                b=>!b.IsTracking && !whitelisted.Contains(b.FriendlyName) ).ToList();
+            using var repository = new Repository(repositoryPath);
             
-            foreach (var branch in notTrackingBranches)
+            var headRef = repository.Refs.Where(r => r.CanonicalName == repository.Head.CanonicalName);
+
+            var notTrackedMergedLocalBranches = repository.Branches.Where(
+                b=>
+                    !b.IsTracking && 
+                    !b.IsRemote &&
+                    b.FriendlyName != repository.Head.FriendlyName &&
+                    repository.Refs.ReachableFrom(headRef, new[] { b.Tip }).Any() && // merged
+                    !whitelisted.Contains(b.FriendlyName) 
+            ).ToList();
+            
+            foreach (var branch in notTrackedMergedLocalBranches)
             {
+                repository.Branches.Remove(branch);
                 WriteLine(branch.FriendlyName);
             }
             

@@ -10,7 +10,9 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>git-rm-branches</ToolCommandName>
     <PackageOutputPath>./nupkg</PackageOutputPath>
-
+    
+    <Version>0.0.1</Version>
+    <VersionSuffix>pre-release</VersionSuffix>
 
 <!--    <PropertyGroup>-->
 <!--      <PackageOutputPath>$(OutDir)</PackageOutputPath>-->
@@ -18,7 +20,7 @@
 <!--      <RepositoryUrl>https://github.com/terrajobst/git-istage</RepositoryUrl>-->
 <!--    </PropertyGroup>-->
     
-      <Description>Clear local branches with no upstream branch</Description>
+      <Description>Clear merged local branches with no upstream branch</Description>
       <Company>Saeed Ganji</Company>
       <Copyright>Copyright © Saeed Ganji (Shahab)</Copyright>
         
