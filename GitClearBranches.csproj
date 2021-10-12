@@ -1,6 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Version>1.0.1</Version>
+
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -10,19 +12,15 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>git-rmb</ToolCommandName>
     <PackageOutputPath>./nupkg</PackageOutputPath>
-    
-    <Version>1.0.1</Version>
 
-<!--    <PropertyGroup>-->
-<!--      <PackageOutputPath>$(OutDir)</PackageOutputPath>-->
-<!--      <GeneratePackageOnBuild>True</GeneratePackageOnBuild>-->
-<!--      <RepositoryUrl>https://github.com/terrajobst/git-istage</RepositoryUrl>-->
-<!--    </PropertyGroup>-->
-    
-      <Description>Clear merged local branches with no upstream branch</Description>
-      <Company>Saeed Ganji</Company>
-      <Copyright>Copyright © Saeed Ganji (Shahab)</Copyright>
-        
+
+    <Authors>Saeed Ganji</Authors>
+    <Company>Saeed Ganji</Company>
+    <Copyright>Copyright © Saeed Ganji (Shahab)</Copyright>
+    <RepositoryUrl>https://github.com/shahabganji/GitClearBranches</RepositoryUrl>
+    <Description>Clear merged local branches with no upstream branch</Description>
+    <LicenseUrl>https://opensource.org/licenses/MIT</LicenseUrl>
+
   </PropertyGroup>
 
   <ItemGroup>
