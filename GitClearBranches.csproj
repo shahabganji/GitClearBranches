@@ -18,11 +18,22 @@
     <Company>Saeed Ganji</Company>
     <Copyright>Copyright © Saeed Ganji (Shahab)</Copyright>
     <RepositoryUrl>https://github.com/shahabganji/GitClearBranches</RepositoryUrl>
-    <Description>Clear merged local branches with no upstream branch</Description>
-    <LicenseUrl>https://opensource.org/licenses/MIT</LicenseUrl>
-
+    <Description>It clears all branches merged with the HEAD or active branch and no longer has a remote branch.</Description>
+    
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!--https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#packing-a-license-expression-or-a-license-file-->
+    <!--<PackageLicenseExpression>MIT</PackageLicenseExpression>-->
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="LICENSE" Pack="true" PackagePath=""/>
+    <None Include="README.md" Pack="true" PackagePath=""/>
+  </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
   </ItemGroup>
