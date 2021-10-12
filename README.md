@@ -1,6 +1,6 @@
 # GitClearBranches
 
-It clears all merged branches that no longer has a remote branch.
+It clears all branches merged with the `HEAD` or **Active branch** and no longer has a remote branch.
 
 ### Installation
 
