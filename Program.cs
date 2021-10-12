@@ -88,8 +88,12 @@ namespace GitClearBranches
             if (IsNullOrEmpty(repositoryPath))
                 return Empty;
 
+            var index = repositoryPath.LastIndexOf("/.git/", StringComparison.Ordinal);
+            if(index == -1)
+                index = repositoryPath.LastIndexOf("\\.git\\", StringComparison.Ordinal);
+
             return Repository.IsValid(repositoryPath)
-                ? repositoryPath[..repositoryPath.LastIndexOf("/.git/", StringComparison.Ordinal)]
+                ? repositoryPath[..index]
                 : Empty;
         }
 
