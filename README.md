@@ -5,7 +5,7 @@ It clears all branches merged with the `HEAD` or **Active branch** and no longer
 ### Installation
 
 ```bash
-dotnet tool install --global GitClearBranches --version 1.0.0
+dotnet tool install --global GitClearBranches --version 1.0.1
 ```
 
 ### Usage
